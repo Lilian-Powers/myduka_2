@@ -20,9 +20,14 @@
       padding: 10px;
       margin: 20px;
     }
+    .btn_container{
+        display: flex;
+        justify-content: center;
+        margin: 50px;
+      }
   </style>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">SALES</a>
       <button
         class="navbar-toggler"
@@ -38,19 +43,25 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/home" style="color: blue">HOME</a>
+            <a class="nav-link" href="/" style="color: blue">HOME</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard" style="color: blue">DASHBOARD</a>
+            <a class="nav-link" href="/dashboard" style="color: blue"
+              >DASHBOARD</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/products" style="color: blue">PRODUCTS</a>
+            <a class="nav-link" href="/products" style="color: blue"
+              >PRODUCTS</a
+            >
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/sales" style="color: blue">SALES</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/registering" style="color: blue">Register</a>
+            <a class="nav-link" href="/registering" style="color: blue"
+              >Register</a
+            >
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/login" style="color: blue">Login</a>
@@ -61,10 +72,17 @@
         </ul>
       </div>
     </nav>
-    <h1 style="text-align: center">See our sales for last month</h1>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+      <li style="color: red;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    <h1 style="text-align: center"><span style="color: blue;" >Sales</span> page</h1>
     <table id="myTable" class="display">
-      <!-- Button trigger modal -->
-      <button
+      <div class="btn_container">
+        <button
         type="button"
         class="btn btn-primary"
         data-toggle="modal"
@@ -72,8 +90,8 @@
       >
         Make Sales
       </button>
+      </div>
 
-      <!-- Modal -->
       <div
         class="modal fade"
         id="exampleModal"
@@ -85,7 +103,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Make Sales</h5>
+              <h5 class="modal-title" id="exampleModalLabel"><span style="color: blue;" >Make Sales</span></h5>
               <button
                 type="button"
                 class="close"
@@ -103,7 +121,13 @@
                   <option value="{{i[0]}}">{{i[1]}}</option>
                   {% endfor %}</select
                 ><br /><br />
-                <input name="quant" type="number" placeholder="Enter amount" required /> <br /><br />
+                <input
+                  name="quant"
+                  type="number"
+                  placeholder="Enter amount"
+                  required
+                />
+                <br /><br />
                 <div>
                   <h4>Mode of Payment</h4>
                 </div>
@@ -141,7 +165,9 @@
                     >Bank Transfer</label
                   >
                 </div>
-                <button type="submit" class="btn btn-primary">Make Sale</button>
+                <div class="btn_container">
+                  <button type="submit" class="btn btn-primary">Make Sale</button>
+                </div>
               </form>
             </div>
           </div>
@@ -187,9 +213,11 @@
       let table = new DataTable("#myTable");
     </script>
     <script>
-      document.getElementById("sales_form").addEventListener("submit", function(){
-        window.location.reload();
-      });
+      document
+        .getElementById("sales_form")
+        .addEventListener("submit", function () {
+          window.location.reload();
+        });
     </script>
   </body>
 </html>

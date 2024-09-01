@@ -18,12 +18,18 @@ def home():
 
 @app.route("/products")
 def products():
+    if "email1" not in session:
+        flash("Login to view products")
+        return redirect(url_for("login"))
     prods = get_data("products")
     return render_template("products.html", prods=prods)
 
 
 @app.route("/sales")
 def sales():
+    if "email1" not in session:
+        flash("Login to view sales")
+        return redirect(url_for("login"))
     sale = get_data("sales")
     products = get_data("products")
     return render_template("sales.html", sale=sale, products=products)
@@ -32,6 +38,7 @@ def sales():
 @app.route("/add_products", methods=["POST", "GET"])
 def add_product():
     if "email1" not in session:
+        flash("Login to add products")
         return redirect(url_for("login"))
     if request.method == "POST":
         pname = request.form["pn"]
@@ -47,6 +54,7 @@ def add_product():
 @app.route("/make_sales", methods=["POST", "GET"])
 def make_sale():
     if "email1" not in session:
+        flash("Login to make sales")
         return redirect(url_for("login"))
     if request.method == "POST":
         pname = request.form["productid"]
@@ -59,6 +67,10 @@ def make_sale():
 
 @app.route("/dashboard")
 def dashboard():
+    if "email1" not in session:
+        flash("Login to view dashboard")
+        return redirect(url_for("login"))
+    
     s_prods = get_sales_per_product()
     products_profit = get_profit_per_product()
     sales_per_day = get_sales_per_day()

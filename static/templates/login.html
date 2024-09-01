@@ -11,55 +11,67 @@
       crossorigin="anonymous"
     />
     <style>
+      html{
+        display: flex;
+        justify-content: center;
+      }
       body {
         padding: 20px;
         margin: 20px;
+        width: 50%;
+      }
+      .btn_container{
+        display: flex;
+        justify-content: center;
+        margin: 50px;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">LOGIN</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/" style="color: blue">HOME</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/dashboard" style="color: blue"
-              >DASHBOARD</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/products" style="color: blue"
-              >PRODUCTS</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/sales" style="color: blue">SALES</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/registering" style="color: blue"
-              >Register</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login" style="color: blue">Login</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <div>
+      <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">LOGIN</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/" style="color: blue">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard" style="color: blue"
+                >DASHBOARD</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/products" style="color: blue"
+                >PRODUCTS</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/sales" style="color: blue">SALES</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/registering" style="color: blue"
+                >Register</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login" style="color: blue">Login</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul class="flashes">
       {% for message in messages %}
@@ -69,7 +81,7 @@
     {% endif %} {% endwith %}
     <div class="container">
       <form action="/login" method="post">
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 20px;">
           <label for="exampleInputEmail1">Email address</label>
           <input
             type="email"
@@ -95,7 +107,9 @@
             required
           />
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="btn_container">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
       </form>
     </div>
     <script

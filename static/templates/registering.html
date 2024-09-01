@@ -11,21 +11,24 @@
       crossorigin="anonymous"
     />
     <style>
-      .btn_container{
+      html{
         display: flex;
         justify-content: center;
-        margin-bottom: 20px;
+      }
+      body {
+        padding: 10px;
+        margin: 20px;
+        width: 70%;
+      }
+      .btn_container {
+        display: flex;
+        justify-content: center;
+        margin: 50px;
       }
     </style>
   </head>
   <body>
-    <h1 style="text-align: center">
-      Let's get you <span style="color: blue">register</span>ed
-    </h1>
-    <p style="text-align: center">
-      Fill in your details in the following form;
-    </p>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">REGISTER</a>
       <button
         class="navbar-toggler"
@@ -67,6 +70,13 @@
         </ul>
       </div>
     </nav>
+    <h1 style="text-align: center; margin-top: 20px;">
+      <p>Let's get you <span style="color: blue">register</span>ed to</p>
+      <p style="color: blue">AVC</p>
+    </h1>
+    <p style="text-align: center">
+      Fill in your details in the following form;
+    </p>
     <div class="container">
       {% with messages = get_flashed_messages() %} {% if messages %}
       <ul class="flashes">
@@ -114,16 +124,22 @@
         </div>
         <div class="form-group">
           <label for="">Gender:</label>
+          <small id="emailHelp" class="form-text text-muted"
+            >(optional)</small
+          >
           <input
             type="text"
             class="form-control"
             id="gender"
-            placeholder="Enter male/female"
+            placeholder="Enter gender"
             name="g"
           />
         </div>
         <div class="form-group">
           <label for="">Ip address:</label>
+          <small id="emailHelp" class="form-text text-muted"
+            >(optional)</small
+          >
           <input
             type="text"
             class="form-control"
