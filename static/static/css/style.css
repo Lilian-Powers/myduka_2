@@ -1,0 +1,67 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body, html{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;  
+}
+.container{
+    width: 100%;
+    margin: 0 auto;
+}
+form{
+    text-align: center;
+    background-color: goldenrod;
+    border: 2px solid black;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+th{
+    border: 1px solid black;
+    font-size: 20px;
+    width: 10%;
+}
+th:hover{
+    background-color: aquamarine;
+    font-size: 25px;
+}
+table tr:nth-last-child(odd){
+    background-color: #f2f2f2;
+}
+/*tbody.bordered{
+    border: 1px solid black;
+}*/
+label{
+    font-size: 23px;
+    font-weight: 600;
+}
+span{
+    font-size: 19px;
+    font-weight: 900;
+}
+p{
+    font-style: italic;
+    font-size: 16px;
+}
+button{
+    width: 20%;
+    background-color: aquamarine;
+    color: crimson;
+    font-size: 16px;
+    border-radius: 5px;
+    font-weight: 800;
+}
+button:hover{
+    cursor: pointer;
+    font-size: 20px;
+}
