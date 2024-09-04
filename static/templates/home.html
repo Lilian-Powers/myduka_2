@@ -14,10 +14,18 @@
   <style>
     body {
       padding: 10px;
-      margin: 20px;
+      margin: 0;
       background-color: rgb(153, 203, 223);
       font-size: 20px;
     }
+    .navbar{
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+    }
+  .jumbotron{
+    margin-top: 90px;
+  }
     .btn_container{
         display: flex;
         justify-content: center;
@@ -25,7 +33,7 @@
       }
   </style>
   <body>
-    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light" style="border-radius: 8px;">
       <a class="navbar-brand" href="/">HOME</a>
       <button
         class="navbar-toggler"

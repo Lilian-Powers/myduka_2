@@ -11,14 +11,19 @@
       crossorigin="anonymous"
     />
     <style>
-      html{
+      html {
         display: flex;
         justify-content: center;
       }
       body {
         padding: 10px;
-        margin: 20px;
+        margin: 0;
         width: 70%;
+      }
+      .navbar {
+        position: fixed;
+        width: 70%;
+        z-index: 1000;
       }
       .btn_container {
         display: flex;
@@ -28,7 +33,10 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
+    <nav
+      class="navbar navbar-expand-sm-md-lg navbar-light bg-light"
+      style="border-radius: 8px"
+    >
       <a class="navbar-brand" href="#">REGISTER</a>
       <button
         class="navbar-toggler"
@@ -70,18 +78,22 @@
         </ul>
       </div>
     </nav>
-    <h1 style="text-align: center; margin-top: 20px;">
-      <p>Let's get you <span style="color: blue">register</span>ed to</p>
-      <p style="color: blue">AVC</p>
-    </h1>
-    <p style="text-align: center">
-      Fill in your details in the following form;
-    </p>
+    <div style="margin-top: 90px;">
+      <h1 style="text-align: center; margin-top: 20px">
+        <p>Let's get you <span style="color: blue">register</span>ed to</p>
+        <p style="color: blue">AVC</p>
+      </h1>
+      <p style="text-align: center">
+        Fill in your details in the following form;
+      </p>
+    </div>
     <div class="container">
       {% with messages = get_flashed_messages() %} {% if messages %}
       <ul class="flashes">
         {% for message in messages %}
-        <li style="color: red; text-align: center">{{ message }}</li>
+        <li style="color: red; text-align: center; list-style-type: none">
+          {{ message }}
+        </li>
         {% endfor %}
       </ul>
       {% endif %} {% endwith %}
@@ -124,9 +136,7 @@
         </div>
         <div class="form-group">
           <label for="">Gender:</label>
-          <small id="emailHelp" class="form-text text-muted"
-            >(optional)</small
-          >
+          <small id="emailHelp" class="form-text text-muted">(optional)</small>
           <input
             type="text"
             class="form-control"
@@ -137,9 +147,7 @@
         </div>
         <div class="form-group">
           <label for="">Ip address:</label>
-          <small id="emailHelp" class="form-text text-muted"
-            >(optional)</small
-          >
+          <small id="emailHelp" class="form-text text-muted">(optional)</small>
           <input
             type="text"
             class="form-control"

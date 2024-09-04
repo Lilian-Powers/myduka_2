@@ -18,7 +18,7 @@ def home():
 
 @app.route("/products")
 def products():
-    if "email1" not in session:
+    if "email" not in session:
         flash("Login to view products")
         return redirect(url_for("login"))
     prods = get_data("products")
@@ -27,7 +27,7 @@ def products():
 
 @app.route("/sales")
 def sales():
-    if "email1" not in session:
+    if "email" not in session:
         flash("Login to view sales")
         return redirect(url_for("login"))
     sale = get_data("sales")
@@ -37,7 +37,7 @@ def sales():
 
 @app.route("/add_products", methods=["POST", "GET"])
 def add_product():
-    if "email1" not in session:
+    if "email" not in session:
         flash("Login to add products")
         return redirect(url_for("login"))
     if request.method == "POST":
@@ -53,7 +53,7 @@ def add_product():
 
 @app.route("/make_sales", methods=["POST", "GET"])
 def make_sale():
-    if "email1" not in session:
+    if "email" not in session:
         flash("Login to make sales")
         return redirect(url_for("login"))
     if request.method == "POST":
@@ -67,7 +67,7 @@ def make_sale():
 
 @app.route("/dashboard")
 def dashboard():
-    if "email1" not in session:
+    if "email" not in session:
         flash("Login to view dashboard")
         return redirect(url_for("login"))
     
@@ -116,9 +116,10 @@ def register():
             new_user = (firstname, lastname, email,
                         gender1, ip_address, hashed_password)
             register_user(new_user)
+            flash("Registration successful! Now login using the email and password")
             return redirect(url_for("login"))
         else:
-            flash("Email already exists")
+            flash("Email already exists, login here")
             return redirect(url_for("login"))
 
     return render_template("registering.html")
@@ -134,7 +135,7 @@ def login():
         
         c_email = check_email(email1)
         if c_email == None:
-            flash("Email does not exist. Please register here.", "danger")
+            flash("Email does not exist. First, register here", "danger")
             return redirect(url_for("register"))
         else:
             if bcrypt.check_password_hash(c_email[-1], password1):
@@ -149,13 +150,8 @@ def login():
     return render_template("login.html")
 @app.route("/logout")
 def logout():
-    session.pop("email1", None)
+    session.pop("email", None)
     return redirect(url_for("login"))
-
-@app.route("/calc")
-def net_pay_calc():
-    return render_template("netpaycalc.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)

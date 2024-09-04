@@ -17,8 +17,14 @@
     <style>
       body {
         padding: 10px;
-        margin: 20px;
+        margin: 0;
+        background-color: rgb(153, 203, 223);
       }
+      .navbar{
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+    }
       .btn_container{
         display: flex;
         justify-content: center;
@@ -27,7 +33,7 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light" style="border-radius: 8px;">
       <a class="navbar-brand" href="#">PRODUCTS</a>
       <button
         class="navbar-toggler"
@@ -70,7 +76,7 @@
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul class="flashes">
       {% for message in messages %}
-      <li style="color: red;">{{ message }}</li>
+      <li style="color: red; list-style-type: none;">{{ message }}</li>
       {% endfor %}
     </ul>
     {% endif %} {% endwith %}
