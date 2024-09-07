@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SALES</title>
+    <title>Document</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -14,27 +14,30 @@
       rel="stylesheet"
       href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css"
     />
-  </head>
-  <style>
-    body {
-      padding: 10px;
-      margin: 0;
-      background-color: rgb(153, 203, 223);
-    }
-    .navbar{
+    <style>
+      body {
+        padding: 10px;
+        margin: 0;
+        background-color: rgb(153, 203, 223);
+      }
+      .navbar {
         position: fixed;
         width: 100%;
         z-index: 1000;
-    }
-    .btn_container{
+      }
+      .btn_container {
         display: flex;
         justify-content: center;
         margin: 50px;
       }
-  </style>
+    </style>
+  </head>
   <body>
-    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light" style="border-radius: 8px;">
-      <a class="navbar-brand" href="#">SALES</a>
+    <nav
+      class="navbar navbar-expand-sm-md-lg navbar-light bg-light"
+      style="border-radius: 8px"
+    >
+      <a class="navbar-brand" href="/">HOME</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -48,9 +51,6 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/" style="color: blue">HOME</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" href="/dashboard" style="color: blue"
               >DASHBOARD</a
@@ -84,112 +84,102 @@
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul class="flashes">
       {% for message in messages %}
-      <li style="color: red; list-style-type: none;">{{ message }}</li>
+      <li style="color: red; list-style-type: none">{{ message }}</li>
       {% endfor %}
     </ul>
     {% endif %} {% endwith %}
-    <div style="margin-top: 90px;">
-      <h1 style="text-align: center"><span style="color: blue;" >Sales</span> page</h1>
+    <div style="margin-top: 90px">
+      <h1 style="text-align: center">
+        <span style="color: blue">Stocks</span> page
+      </h1>
     </div>
-    <table id="myTable" class="display">
-      <div class="btn_container">
-        <button
-        type="button"
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#exampleModal"
-      >
-        Make Sales
-      </button>
-      </div>
+    <!-- Button trigger modal -->
+    <div class="btn_container">
+      <button
+      type="button"
+      class="btn btn-primary"
+      data-toggle="modal"
+      data-target="#exampleModal"
+    >
+      Add Stock
+    </button>
+    </div>
 
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"><span style="color: blue;" >Make Sales</span></h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form id="sales_form" action="/make_sales" class="" method="POST">
-                <select name="productid" id="">
-                  <option value="">select product</option>
-                  {% for i in products %}
-                  <option value="{{i[0]}}">{{i[1]}}</option>
-                  {% endfor %}</select
-                ><br /><br />
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              <span style="color: blue">Add Stock</span>
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="stock_form" action="/add_stock" method="POST">
+              <div class="form-group">
+                <label for="formGroupExampleInput">Sales id</label>
                 <input
-                  name="quant"
-                  type="number"
-                  placeholder="Enter amount"
-                  required
+                  type="text"
+                  class="form-control"
+                  id="formGroupExampleInput"
+                  placeholder="Enter Sales id"
+                  name="si"
                 />
-                <br /><br />
-                <div>
-                  <h4>Mode of Payment</h4>
-                </div>
-                <div class="form-group form-check">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                    name="check"
-                    required
-                  />
-                  <label class="form-check-label" for="exampleCheck1"
-                    >Cash</label
-                  >
-                </div>
-                <div class="form-group form-check">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                    name="check"
-                  />
-                  <label class="form-check-label" for="exampleCheck1"
-                    >Mpesa</label
-                  >
-                </div>
-                <div class="form-group form-check">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                    name="check"
-                  />
-                  <label class="form-check-label" for="exampleCheck1"
-                    >Bank Transfer</label
-                  >
-                </div>
-                <div class="btn_container">
-                  <button type="submit" class="btn btn-primary">Make Sale</button>
-                </div>
-              </form>
+              </div>
+              <div class="form-group">
+                <label for="formGroupExampleInput2">Product id</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="formGroupExampleInput2"
+                  placeholder="Enter product id"
+                  name="pi"
+                />
+              </div>
+              <div class="form-group">
+                <label for="formGroupExampleInput2">Quantity</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="formGroupExampleInput2"
+                  placeholder="Enter amount"
+                  name="quant"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div>
+              <button type="button" class="btn btn-primary">Add</button>
             </div>
           </div>
         </div>
-      </div>stockquantity
+      </div>
+    </div>
+    <!-- table -->
+    <table id="myTable" class="display">
       <thead>
         <tr>
-          <th>Serial No.</th>
-          <th>Product Serial No.</th>
+          <th>Stock id</th>
+          <th>Sales id</th>
+          <th>Product id</th>
           <th>Quantity</th>
-          <th>Created at</th>
+          <th>createdat</th>
         </tr>
       </thead>
       <tbody>
@@ -199,6 +189,7 @@
           <td>{{i[1]}}</td>
           <td>{{i[2]}}</td>
           <td>{{i[3]}}</td>
+          <td>{{i[4]}}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -225,7 +216,7 @@
     </script>
     <script>
       document
-        .getElementById("sales_form")
+        .getElementById("stock_form")
         .addEventListener("submit", function () {
           window.location.reload();
         });

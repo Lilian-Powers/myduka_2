@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 
-from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email
+from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email, insert_stock
 
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-bcrypt=Bcrypt(app)
+bcrypt = Bcrypt(app)
 
 app.secret_key = "12345"
 
@@ -33,6 +33,15 @@ def sales():
     sale = get_data("sales")
     products = get_data("products")
     return render_template("sales.html", sale=sale, products=products)
+
+
+@app.route("/stock")
+def stock():
+    if "email" not in session:
+        flash("Login to view sales")
+        return render_template(url_for("login"))
+    stock = get_data("stock")
+    return render_template("stock.html", stock=stock)
 
 
 @app.route("/add_products", methods=["POST", "GET"])
@@ -64,13 +73,29 @@ def make_sale():
         insert_sales(new_sale)
         return redirect(url_for("sales"))
 
+@app.route("/add_stock", methods=["POST", "GET"])
+def add_stock():
+    if "email" not in session:
+        flash("Login to make sales")
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        salesid = request.form["si"]
+        productid = request.form["pi"]
+        quantity = request.form["quant"]
+
+        new_stock = (salesid, productid, quantity)
+        insert_stock(new_stock)
+        flash("Stock added succesfully")
+        
+        return redirect(url_for("stock"))
+
 
 @app.route("/dashboard")
 def dashboard():
     if "email" not in session:
         flash("Login to view dashboard")
         return redirect(url_for("login"))
-    
+
     s_prods = get_sales_per_product()
     products_profit = get_profit_per_product()
     sales_per_day = get_sales_per_day()
@@ -108,8 +133,9 @@ def register():
         gender1 = request.form["g"]
         ip_address = request.form["ip"]
         password1 = request.form["password"]
-        
-        hashed_password=bcrypt.generate_password_hash(password1).decode("utf-8")
+
+        hashed_password = bcrypt.generate_password_hash(
+            password1).decode("utf-8")
 
         x = check_email(email)
         if x == None:
@@ -127,31 +153,32 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    
 
     if request.method == "POST":
-        email1 = request.form["mail"]
+        email = request.form["mail"]
         password1 = request.form["password"]
-        
-        c_email = check_email(email1)
+
+        c_email = check_email(email)
         if c_email == None:
             flash("Email does not exist. First, register here", "danger")
             return redirect(url_for("register"))
         else:
             if bcrypt.check_password_hash(c_email[-1], password1):
-                flash("login successfull", "success")
-                session["email"]=email1
+                flash("login successfull")
+                session["email"] = email
                 return redirect(url_for("dashboard"))
-            
             else:
-                flash("password is incorrect", "danger")
+                flash("password is incorrect")
                 return redirect(url_for("login"))
 
     return render_template("login.html")
+
+
 @app.route("/logout")
 def logout():
     session.pop("email", None)
     return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -17,7 +17,7 @@ def get_data(table):
 
 
 def insert_products(values):
-    query = "insert into products(name, buyingprice, sellingprice, stockquantity) values(%s, %s, %s, %s)"
+    query = "insert into products(name, buyingprice, sellingprice) values(%s, %s, %s)"
     cur = conn.cursor()
     cur.execute(query, values)
     conn.commit()
@@ -25,6 +25,11 @@ def insert_products(values):
 
 def insert_sales(values):
     query = "insert into sales(productid, quantity, createdat) values(%s, %s, now())"
+    cur.execute(query, values)
+    conn.commit()
+    
+def insert_stock(values):
+    query = "insert into stock(salesid, productid, quantity, createdat) values(%s, %s, %s, now())"
     cur.execute(query, values)
     conn.commit()
 

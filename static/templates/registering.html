@@ -30,6 +30,14 @@
         justify-content: center;
         margin: 50px;
       }
+      /* .spinner-container{
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1050;
+      } */
     </style>
   </head>
   <body>
@@ -68,6 +76,9 @@
             <a class="nav-link" href="/sales" style="color: blue">SALES</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/stock" style="color: blue">STOCK</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/registering" style="color: blue"
               >Register</a
             >
@@ -78,7 +89,7 @@
         </ul>
       </div>
     </nav>
-    <div style="margin-top: 90px;">
+    <div style="margin-top: 90px">
       <h1 style="text-align: center; margin-top: 20px">
         <p>Let's get you <span style="color: blue">register</span>ed to</p>
         <p style="color: blue">AVC</p>
@@ -87,17 +98,14 @@
         Fill in your details in the following form;
       </p>
     </div>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+      <li style="color: red; text-align: center; list-style-type: none">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
     <div class="container">
-      {% with messages = get_flashed_messages() %} {% if messages %}
-      <ul class="flashes">
-        {% for message in messages %}
-        <li style="color: red; text-align: center; list-style-type: none">
-          {{ message }}
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %} {% endwith %}
-
       <form id="Registering" action="/registering" method="post">
         <div class="form-group">
           <label for="">First Name:</label>
@@ -178,6 +186,15 @@
         </div>
       </form>
     </div>
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const spinnerContainer = document.querySelector(".spinner-container");
+        form.addEventListener("submit", function () {
+          spinnerContainer.style.display = "block";
+        });
+      });
+    </script> -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
