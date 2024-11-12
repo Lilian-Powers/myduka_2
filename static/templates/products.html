@@ -1,81 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Products page</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css"
-    />
-    <style>
-      body {
-        padding: 10px;
-        margin: 0;
-        background-color: rgb(153, 203, 223);
-      }
-      .navbar{
-        position: fixed;
-        width: 100%;
-        z-index: 1000;
-    }
-      .btn_container{
-        display: flex;
-        justify-content: center;
-        margin: 50px;
-      }
+{% extends "base.html" %}
+
+{% block title %}Products Page{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .btn_container{
+          display: flex;
+          justify-content: center;
+          margin: 20px;
+        }
     </style>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-sm-md-lg navbar-light bg-light" style="border-radius: 8px;">
-      <a class="navbar-brand" href="#">PRODUCTS</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/" style="color: blue;">HOME</a>
-          </li>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/dashboard" style="color: blue;">DASHBOARD</a>
-        </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/products" style="color: blue;">PRODUCTS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/sales" style="color: blue;">SALES</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/stock" style="color: blue">STOCK</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/registering" style="color: blue">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login" style="color: blue">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login" style="color: blue">logout</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+{% endblock %}
+
+{% block content %}
+
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul class="flashes">
       {% for message in messages %}
@@ -83,16 +22,16 @@
       {% endfor %}
     </ul>
     {% endif %} {% endwith %}
-    <div style="text-align: center;margin-top: 90px;">
+    <div style="text-align: center;margin-top: 20px;">
       <h1><span style="color: blue;" >Products</span> page</h1>
     </div>
-    <table id="myTable" class="display">
+    <table id="myTable" class="display table table-striped">
       <div class="btn_container">
         <button
         type="button"
         class="btn btn-primary"
         data-toggle="modal"
-        data-target="#exampleModal"
+        data-target="#addProductModal"
       >
         Add products
       </button>
@@ -100,16 +39,16 @@
 
       <div
         class="modal fade"
-        id="exampleModal"
+        id="addProductModal"
         tabindex="-1"
         role="dialog"
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="addProductModalLabel"
         aria-hidden="true"
       >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Add <span style="color: blue;" >new product</span></h5>
+              <h5 class="modal-title" id="addProductModalLabel">Add <span style="color: blue;" >new product</span></h5>
               <button
                 type="button"
                 class="close"
@@ -155,17 +94,6 @@
                     required
                   />
                 </div>
-                <div class="form-group">
-                  <label>Stock Quantitiy</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="Enter stock quantitiy"
-                    for="bp"
-                    name="sq"
-                    required
-                  />
-                </div>
                 <div class="btn_container">
                   <button type="submit" class="btn btn-primary">Add</button>
                 </div>
@@ -184,37 +112,59 @@
         </tr>
       </thead>
       <tbody>
-        {% for x in prods %}
+        {% for product in prods %}
         <tr>
-          <td>{{x[0]}}</td>
-          <td>{{x[1]}}</td>
-          <td>{{x[2]}}</td>
-          <td>{{x[3]}}</td>          
+          <td>{{product[0]}}</td>
+          <td>{{product[1]}}</td>
+          <td>{{product[2]}}</td>
+          <td>{{product[3]}}</td>          
           <td>
             <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          <button 
+          type="button" 
+          class="btn btn-primary" 
+          data-toggle="modal" 
+          data-target="#edit{{product[0]}}"
+          >
             Edit product
           </button>
 
           <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="edit{{product[0]}}" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <h5 class="modal-title" id="editProductModalLabel" style="color: blue;">Edit product</h5>
+                  <button 
+                  type="button" 
+                  class="close" 
+                  data-dismiss="modal" 
+                  aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form id="products_form" action="/add_products" method="POST">
+                  <form id="editProductForm" action="/update_product" method="POST">
+                    
                     <div class="form-group">
-                      <label>Product Name</label>
+                      <input
+                        type="hidden"
+                        class="form-control"
+                        placeholder="Enter product name"
+                        value="{{product[0]}}"
+                        for="pn"
+                        name="pi"
+                        required
+                    
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label style="font-weight: 600;">Product Name</label>
                       <input
                         type="text"
                         class="form-control"
                         placeholder="Enter product name"
-                        id="product_name"
+                        value="{{product[1]}}"
                         for="pn"
                         name="pn"
                         required
@@ -222,11 +172,12 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Selling Price</label>
+                      <label style="font-weight: 600;">Selling Price</label>
                       <input
                         type="number"
                         class="form-control"
                         placeholder="Enter Selling price"
+                        value="{{product[2]}}"
                         for="sp"
                         name="sp"
                         required
@@ -234,37 +185,23 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Buying Price</label>
+                      <label style="font-weight: 600;">Buying Price</label>
                       <input
                         type="number"
                         class="form-control"
                         placeholder="Enter buying price"
+                        value="{{product[3]}}"
                         for="bp"
                         name="bp"
                         required
                       
                       />
                     </div>
-                    <div class="form-group">
-                      <label>Stock Quantitiy</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter stock quantitiy"
-                        for="bp"
-                        name="sq"
-                        required
-                        
-                      />
-                    </div>
+                   
                     <div class="btn_container">
                       <button type="submit" class="btn btn-primary">Edit</button>
                     </div>
                   </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
               </div>
             </div>
@@ -274,23 +211,6 @@
         {% endfor %}
       </tbody>
     </table>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
     <script>
       let table = new DataTable("#myTable");
     </script>
@@ -299,5 +219,4 @@
         window.location.reload();
       });
     </script>
-  </body>
-</html>
+{% endblock %}

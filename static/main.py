@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 
-from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email, insert_stock
+from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email, insert_stock, update_product_data, edit_product_data
 
 from flask_bcrypt import Bcrypt
 
@@ -35,15 +35,6 @@ def sales():
     return render_template("sales.html", sale=sale, products=products)
 
 
-@app.route("/stock")
-def stock():
-    if "email" not in session:
-        flash("Login to view sales")
-        return render_template(url_for("login"))
-    stock = get_data("stock")
-    return render_template("stock.html", stock=stock)
-
-
 @app.route("/add_products", methods=["POST", "GET"])
 def add_product():
     if "email" not in session:
@@ -53,9 +44,8 @@ def add_product():
         pname = request.form["pn"]
         sprice = request.form["sp"]
         bprice = request.form["bp"]
-        squantity = request.form["sq"]
 
-        new_prods = (pname, sprice, bprice, squantity)
+        new_prods = (pname, sprice, bprice)
         insert_products(new_prods)
         return redirect(url_for("products"))
 
@@ -73,11 +63,25 @@ def make_sale():
         insert_sales(new_sale)
         return redirect(url_for("sales"))
 
+@app.route("/stock", methods=["POST", "GET"])
+def stock():
+    if "email" not in session:
+        flash("Login to view stocks")
+        return redirect(url_for("login", next=request.url)) 
+
+    stocks = get_data("stock")
+    sale = get_data("sales")
+    product = get_data("products")
+
+    return render_template("stock.html", stocks=stocks, sale=sale, product=product)
+
+
 @app.route("/add_stock", methods=["POST", "GET"])
 def add_stock():
     if "email" not in session:
-        flash("Login to make sales")
-        return redirect(url_for("login"))
+        flash("Login to add stocks")
+        return redirect(url_for("login", next=request.url))
+
     if request.method == "POST":
         salesid = request.form["si"]
         productid = request.form["pi"]
@@ -85,9 +89,10 @@ def add_stock():
 
         new_stock = (salesid, productid, quantity)
         insert_stock(new_stock)
-        flash("Stock added succesfully")
-        
+        flash("Stock added successfully")
         return redirect(url_for("stock"))
+    
+    return render_template("stock.html")
 
 
 @app.route("/dashboard")
@@ -130,8 +135,6 @@ def register():
         firstname = request.form["fname"]
         lastname = request.form["lname"]
         email = request.form["mail"]
-        gender1 = request.form["g"]
-        ip_address = request.form["ip"]
         password1 = request.form["password"]
 
         hashed_password = bcrypt.generate_password_hash(
@@ -140,7 +143,7 @@ def register():
         x = check_email(email)
         if x == None:
             new_user = (firstname, lastname, email,
-                        gender1, ip_address, hashed_password)
+                        hashed_password)
             register_user(new_user)
             flash("Registration successful! Now login using the email and password")
             return redirect(url_for("login"))
@@ -153,6 +156,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    next_page=request.args.get("next", "stock")
 
     if request.method == "POST":
         email = request.form["mail"]
@@ -166,7 +170,7 @@ def login():
             if bcrypt.check_password_hash(c_email[-1], password1):
                 flash("login successfull")
                 session["email"] = email
-                return redirect(url_for("dashboard"))
+                return redirect(url_for(next_page))
             else:
                 flash("password is incorrect")
                 return redirect(url_for("login"))
@@ -178,6 +182,41 @@ def login():
 def logout():
     session.pop("email", None)
     return redirect(url_for("login"))
+
+# prefills
+
+
+@app.route("/edit_product", methods=["GET", "POST"])
+def edit_product():
+    if "email" not in session:
+        flash("Login to edit products")
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        pid = request.form["pi"]
+        pname = request.form["pn"]
+        sprice = request.form["sp"]
+        bprice = request.form["bp"]
+
+        return redirect(url_for("update_product", pi=pid, pn=pname, sp=sprice, bp=bprice))
+    else:
+        product_data = edit_product_data()
+        return render_template("products", product_data=product_data)
+
+
+@app.route("/update_product", methods=["POST"])
+def update_product():
+    if request.method == "POST":
+        pid = request.form["pi"]
+        pname = request.form["pn"]
+        sprice = request.form["sp"]
+        bprice = request.form["bp"]
+
+        update_product_data(pid, pname, sprice, bprice)
+        flash("product updated successfully")
+        return redirect(url_for("products"))
+    else:
+        flash("fill in all the inputs")
+        return redirect(url_for("products"))
 
 
 if __name__ == "__main__":
