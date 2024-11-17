@@ -1,132 +1,160 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}DASHBOARD{% endblock %} {% block head
+%}
+{{ super() }}
+<style type="text/css">
+  body {
+    padding: 10px;
+    margin: 0;
+    background-color: rgb(153, 203, 223);
+    font-size: 20px;
+  }
+</style>
+{% endblock %} {% block content %}
 
-{% block title %}DASHBOARD{% endblock %} 
-
-{% block head %}
-    {{ super() }}
-      <style type="text/css">
-         body {
-            padding: 10px;
-            margin: 0;
-            background-color: rgb(153, 203, 223);
-            font-size: 20px;
-          }
-      </style>
-{% endblock %}
-
-{% block content %}
-
-  <div style = "text-align: center">
-    <h3 style = "margin-top: 20px">
-      The <span style="color: blue">Dashboard</span>
-    </h3>
-    <h2>How is the <span style="color: blue">business</span> doing today?</h2>
+<div style="text-align: center">
+  <h3 style="margin-top: 20px">
+    The <span style="color: blue">Dashboard</span>
+  </h3>
+  <h2>How is the <span style="color: blue">business</span> doing today?</h2>
+</div>
+<div class="container">
+  <div>
+    <canvas id="bar-chart-sales" width="600" height="350"></canvas>
+    <canvas id="bar-chart-profit" width="600" height="350"></canvas>
+    <canvas id="line-chart-sales" width="600" height="350"></canvas>
+    <canvas id="line-chart-profit" width="600" height="350"></canvas>
+    <canvas
+      id="bar-chart-remaining-stock-per-product"
+      width="600"
+      height="350"
+    ></canvas>
   </div>
-  <div class="container">
-    <div>
-      <canvas id="bar-chart-sales" width="600" height="350"></canvas>
-      <canvas id="bar-chart-profit" width="600" height="350"></canvas>
-      <canvas id="line-chart-sales" width="600" height="350"></canvas>
-      <canvas id="line-chart-profit" width="600" height="350"></canvas>
-    </div>
-  </div>
-  <script>
-      // Bar chart
+</div>
 
-      // sales per product
-    new Chart(document.getElementById("bar-chart-sales"), {
-        type: 'bar',
-        data: {
-          labels: {{ names | safe }},
-          datasets: [
-            {
-              label: "Sales per Product",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-              data: {{ sales | safe }}
-            },
-            {
-              label: "Profit per Product",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-              data: {{ profit | safe }}
-            }
-          ]
-        },
-        options: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Sales per Product today'
-          }
-        }
-    });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.3.1/decimal.min.js"></script>
 
-    // profit per product
-    new Chart(document.getElementById("bar-chart-profit"), {
-        type: 'bar',
-        data: {
-          labels: {{ names | safe }},
-          datasets: [
-            {
-              label: "profit per Product",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-              data: {{ profit | safe }}
-            },
-          ]
-        },
-        options: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'profit per Product today'
-          }
-        }
-    });
+<script>
+    // Bar chart
 
-    // line chart
-
-    //sales per day
-
-    new Chart(document.getElementById("line-chart-sales"), {
-      type: 'line',
+    // sales per product
+  new Chart(document.getElementById("bar-chart-sales"), {
+      type: 'bar',
       data: {
-        labels: {{ date | safe }},
-        datasets: [{
-            data: {{ sales | safe }},
-            label: "Sales per day",
-            borderColor: "#3e95cd",
-            fill: false
+        labels: {{ names | safe }},
+        datasets: [
+          {
+            label: "Sales per Product",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+            data: {{ sales | safe }}
+          },
+          {
+            label: "Profit per Product",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+            data: {{ profit | safe }}
+          }
+        ]
+      },
+      options: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Sales per Product today'
+        }
+      }
+  });
+
+  // profit per product
+  new Chart(document.getElementById("bar-chart-profit"), {
+      type: 'bar',
+      data: {
+        labels: {{ names | safe }},
+        datasets: [
+          {
+            label: "profit per Product",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+            data: {{ profit | safe }}
           },
         ]
       },
       options: {
+        legend: { display: false },
         title: {
           display: true,
-          text: 'Profit per day'
+          text: 'profit per Product today'
         }
       }
-    });
+  });
 
-    // profit per day
+  // line chart
 
-    new Chart(document.getElementById("line-chart-profit"), {
-      type: 'line',
+  //sales per day
+
+  new Chart(document.getElementById("line-chart-sales"), {
+    type: 'line',
+    data: {
+      labels: {{ date | safe }},
+      datasets: [{
+          data: {{ sales | safe }},
+          label: "Sales per day",
+          borderColor: "#3e95cd",
+          fill: false
+        },
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Profit per day'
+      }
+    }
+  });
+
+  // profit per day
+
+  new Chart(document.getElementById("line-chart-profit"), {
+    type: 'line',
+    data: {
+      labels: {{ date | safe }},
+      datasets: [{
+          data: {{ d_profit | safe }},
+          label: "Profit per day",
+          borderColor: "green",
+          fill: false
+        },
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Profit per day'
+      }
+    }
+  });
+   // Bar chart
+
+    // remaining-stock-per-product
+
+    new Chart(document.getElementById("bar-chart-remaining-stock-per-product"), {
+      type: 'bar',
       data: {
-        labels: {{ date | safe }},
-        datasets: [{
-            data: {{ d_profit | safe }},
-            label: "Profit per day",
-            borderColor: "green",
-            fill: false
+        labels: {{ names | safe }},
+        datasets: [
+          {
+            label: "Remaining Stock per Product",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+            data: {{ stock | safe }}
           },
         ]
       },
       options: {
+        legend: { display: false },
         title: {
           display: true,
-          text: 'Profit per day'
+          text: 'Remaining Stock per Product'
         }
       }
-    });
-  </script>
-  
+  });
+</script>
+
 {% endblock %}

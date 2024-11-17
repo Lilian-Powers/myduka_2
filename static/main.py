@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 
-from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email, insert_stock, update_product_data, edit_product_data
+from dbservice import get_data, insert_products, insert_sales, get_sales_per_product, get_profit_per_product, get_sales_per_day, get_profit_per_day, register_user, check_email, insert_stock, update_product_data, edit_product_data, get_remaining_stock_per_product, get_stock_quantity
+
+from pgfunc import get_remaining_stock_per_single_product
 
 from flask_bcrypt import Bcrypt
 
@@ -11,18 +13,43 @@ bcrypt = Bcrypt(app)
 app.secret_key = "12345"
 
 
+@app.context_processor
+def inject_remaining_stock_per_single_product():
+    return {}
+
+
 @app.route("/")
 def home():
     return render_template("home.html")
 
 
-@app.route("/products")
-def products():
+@app.route("/products/<int:productid>")
+def products(productid):
+    if "email" not in session:
+        flash("Login to view products")
+        return redirect(url_for("login"))
+
+    prods = get_data("products")
+    remaining_stock = get_remaining_stock_per_single_product(productid)
+    # making sure the remaining_stock is a dictionary
+    if not isinstance(remaining_stock, dict):
+        remaining_stock = {}
+
+    return render_template("products.html", prods=prods, remaining_stock=remaining_stock)
+
+
+@app.route("/products_list")
+def products_list():
     if "email" not in session:
         flash("Login to view products")
         return redirect(url_for("login"))
     prods = get_data("products")
-    return render_template("products.html", prods=prods)
+    productid = prods[0][0] if prods else None
+    remaining_stock = get_remaining_stock_per_single_product(productid)
+    # making sure the remaining_stock is a dictionary
+    if not isinstance(remaining_stock, dict):
+        remaining_stock = {}
+    return render_template("products.html", prods=prods, remaining_stock=remaining_stock)
 
 
 @app.route("/sales")
@@ -32,7 +59,9 @@ def sales():
         return redirect(url_for("login"))
     sale = get_data("sales")
     products = get_data("products")
-    return render_template("sales.html", sale=sale, products=products)
+    product_name = {product[0]: product[1] for product in products}
+
+    return render_template("sales.html", sale=sale, products=products, product_name=product_name)
 
 
 @app.route("/add_products", methods=["POST", "GET"])
@@ -45,9 +74,10 @@ def add_product():
         sprice = request.form["sp"]
         bprice = request.form["bp"]
 
-        new_prods = (pname, sprice, bprice)
-        insert_products(new_prods)
-        return redirect(url_for("products"))
+        insert_products(pname, sprice, bprice)
+
+        productid = insert_products(pname, sprice, bprice)
+        return redirect(url_for("products_list", productid=productid))
 
 
 @app.route("/make_sales", methods=["POST", "GET"])
@@ -55,25 +85,33 @@ def make_sale():
     if "email" not in session:
         flash("Login to make sales")
         return redirect(url_for("login"))
+    
     if request.method == "POST":
         pname = request.form["productid"]
-        quantity = request.form["quant"]
-
-        new_sale = (pname, quantity)
-        insert_sales(new_sale)
+        quantity = int(request.form["quant"])
+        stockquantity=get_stock_quantity(pname)
+        
+    if quantity > stockquantity:
+        flash(f"Insufficient stock for the requested sale. {stockquantity}: only remaining.")
         return redirect(url_for("sales"))
+    else:
+        insert_sales(pname, quantity)
+        flash("The sale is successfull. Thank you!")
+        return redirect(url_for("sales"))
+
 
 @app.route("/stock", methods=["POST", "GET"])
 def stock():
     if "email" not in session:
         flash("Login to view stocks")
-        return redirect(url_for("login", next=request.url)) 
+        return redirect(url_for("login", next=request.url))
 
     stocks = get_data("stock")
     sale = get_data("sales")
-    product = get_data("products")
+    products = get_data("products")
+    product_name = {product[0]: product[1] for product in products}
 
-    return render_template("stock.html", stocks=stocks, sale=sale, product=product)
+    return render_template("stock.html", stocks=stocks, sale=sale, products=products, product_name=product_name)
 
 
 @app.route("/add_stock", methods=["POST", "GET"])
@@ -85,14 +123,16 @@ def add_stock():
     if request.method == "POST":
         salesid = request.form["si"]
         productid = request.form["pi"]
-        quantity = request.form["quant"]
+        # pname = request.form["pn"]
+        quantity = int(request.form["quant"])
 
-        new_stock = (salesid, productid, quantity)
-        insert_stock(new_stock)
+        # new_stock = (salesid, productid, quantity, pname)
+        insert_stock(salesid, productid, quantity)
         flash("Stock added successfully")
         return redirect(url_for("stock"))
-    
-    return render_template("stock.html")
+    else:
+        flash("Error adding stock. Try again.")
+        return render_template("stock.html")
 
 
 @app.route("/dashboard")
@@ -105,12 +145,14 @@ def dashboard():
     products_profit = get_profit_per_product()
     sales_per_day = get_sales_per_day()
     profit_per_day = get_profit_per_day()
+    r_stock = get_remaining_stock_per_product()
 
     names = []
     sales = []
     profit = []
     date = []
     d_profit = []
+    stock = []
 
     for i in s_prods:
         names.append(i[0])
@@ -121,12 +163,15 @@ def dashboard():
 
     for i in sales_per_day:
         date.append(str(i[0]))
-        sales.append(i[1])
+        # sales.append(i[1])
 
     for i in profit_per_day:
         d_profit.append(i[1])
 
-    return render_template("dashboard.html", names=names, sales=sales, profit=profit, date=date, d_profit=d_profit)
+    for i in r_stock:
+        stock.append(i[1])
+
+    return render_template("dashboard.html", names=names, sales=sales, profit=profit, date=date, d_profit=d_profit, stock=stock)
 
 
 @app.route("/registering", methods=["GET", "POST"])
@@ -156,7 +201,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    next_page=request.args.get("next", "stock")
+    next_page = request.args.get("next", "stock")
 
     if request.method == "POST":
         email = request.form["mail"]
@@ -200,10 +245,10 @@ def edit_product():
         return redirect(url_for("update_product", pi=pid, pn=pname, sp=sprice, bp=bprice))
     else:
         product_data = edit_product_data()
-        return render_template("products", product_data=product_data)
+        return render_template("products.html", product_data=product_data)
 
 
-@app.route("/update_product", methods=["POST"])
+@app.route("/update_product", methods= ["GET", "POST"])
 def update_product():
     if request.method == "POST":
         pid = request.form["pi"]
@@ -213,10 +258,10 @@ def update_product():
 
         update_product_data(pid, pname, sprice, bprice)
         flash("product updated successfully")
-        return redirect(url_for("products"))
+        return redirect(url_for("products_list"))
     else:
         flash("fill in all the inputs")
-        return redirect(url_for("products"))
+        return redirect(url_for("products_list"))
 
 
 if __name__ == "__main__":

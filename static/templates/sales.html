@@ -117,22 +117,22 @@
             </div>
           </div>
         </div>
-      </div>stockquantity
+      </div>
       <thead>
         <tr>
           <th>Serial No.</th>
-          <th>Product Serial No.</th>
+          <th>Product Name</th>
           <th>Quantity</th>
           <th>Created at</th>
         </tr>
       </thead>
       <tbody>
-        {% for i in sale %}
+        {% for sale in sale %}
         <tr>
-          <td>{{i[0]}}</td>
-          <td>{{i[1]}}</td>
-          <td>{{i[2]}}</td>
-          <td>{{i[3]}}</td>
+          <td>{{sale[0]}}</td>
+          <td>{{product_name.get(sale[1], 'unknown')}}</td>
+          <td>{{sale[2]}}</td>
+          <td>{{sale[3]}}</td>
         </tr>
         {% endfor %}
       </tbody>

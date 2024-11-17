@@ -108,16 +108,34 @@
           <th>Product Name</th>
           <th>Selling Price</th>
           <th>Buying Price</th>
+          <th>Remaining Stock</th>
           <th>Edit</th>
+          <th>Bar Code</th>
         </tr>
       </thead>
       <tbody>
         {% for product in prods %}
+          {% set stock =remaining_stock.get(productid, 0) %}
+          {% if stock < 20 %}
+            <tr style="background-color: red;">
+          {% elif stock <= 50 %}
+            <tr style="background-color: yellow;">
+          {% else %}
+          <tr style="background-color: white;">
+          {% endif %}
         <tr>
           <td>{{product[0]}}</td>
           <td>{{product[1]}}</td>
           <td>{{product[2]}}</td>
-          <td>{{product[3]}}</td>          
+          <td>{{product[3]}}</td> 
+          <td>
+            {% set stock = remaining_stock.get(productid) %}
+            {% if stock and stock > 0 %}
+              {{ stock }}
+            {% else %}
+              No stock data available for now.
+            {% endif %}
+          </td>        
           <td>
             <!-- Button trigger modal -->
           <button 
@@ -144,7 +162,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form id="editProductForm" action="/update_product" method="POST">
+                  <form id="editProductForm" action="/edit_product" method="POST">
                     
                     <div class="form-group">
                       <input

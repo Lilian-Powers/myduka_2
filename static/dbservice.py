@@ -17,22 +17,51 @@ def get_data(table):
     return data
 
 
-def insert_products(values):
+def insert_products(name, buyingprice, sellingprice):
     query = "insert into products(name, buyingprice, sellingprice) values(%s, %s, %s)"
+    values= (name, buyingprice, sellingprice)
     cur.execute(query, values)
     conn.commit()
 
 
-def insert_sales(values):
+def insert_sales(productid, quantity):
     query = "insert into sales(productid, quantity, createdat) values(%s, %s, now())"
+    values= (productid, quantity)
     cur.execute(query, values)
     conn.commit()
+    
+def get_stock_quantity(name):
+    query ="SELECT SUM(quantity) FROM stock JOIN products ON stock.productid=products.productid WHERE products.name=%s GROUP BY products.name"
+    values= (name,)
+    cur.execute(query, values)
+    stockquantity=cur.fetchone()
+    return stockquantity[0] if stockquantity and stockquantity[0] is not None else 0
 
 
-def insert_stock(values):
+def insert_stock(salesid, productid, quantity):
     query = "insert into stock(salesid, productid, quantity, createdat) values(%s, %s, %s, now())"
+    values=(salesid, productid, quantity)
     cur.execute(query, values)
     conn.commit()
+    
+def add_stock(salesid, productid, quantity):
+    query="INSERT INTO stock(salesid, productid, quantity, createdat) VALUES(%s, %s, %s, NOW())"
+    values=(salesid, productid, quantity)
+    cur.execute(query, values)
+    conn.commit()
+    
+# def add_stock(salesid, productid, quantity):
+#     query="SELECT stock.stockid, stock.salesid, stock.productid, products.name, stock.quantity, stock.createdat FROM stock JOIN products ON stock.productid = products.productid;"
+#     values=(salesid, productid, quantity)
+#     cur.execute(query, values)
+#     conn.commit()
+
+
+def get_remaining_stock_per_product():
+    query = "SELECT stock.productid, SUM(stock.quantity)- COALESCE(SUM(sales.quantity),0) AS Remaining_Stock FROM stock LEFT JOIN sales ON stock.productid=sales.productid GROUP BY stock.productid;"
+    cur.execute(query)
+    res = cur.fetchall()
+    return res
 
 
 def get_profit_per_product():
@@ -63,8 +92,9 @@ def get_profit_per_day():
     return res
 
 
-def register_user(values):
+def register_user(first_name, last_name, email, password):
     query = "insert into users(first_name, last_name, email, password) values(%s, %s, %s, %s)"
+    values=(first_name, last_name, email, password)
     cur.execute(query, values)
     conn.commit()
 
