@@ -1,7 +1,7 @@
 import psycopg2
 
 conn = psycopg2.connect(
-    dbname='myduka',
+    dbname='myduka_db',
     password='7663',
     user='postgres',
     host='localhost',
@@ -17,76 +17,51 @@ def get_data(table):
     return data
 
 
-def insert_products(name, buyingprice, sellingprice):
-    query = "insert into products(name, buyingprice, sellingprice) values(%s, %s, %s)"
-    values= (name, buyingprice, sellingprice)
+def insert_products(name, buying_price, selling_price, stock_quantity):
+    query = "insert into products(name, buying_price, selling_price, stock_quantity) values(%s, %s, %s, %s)"
+    values = (name, buying_price, selling_price, stock_quantity)
     cur.execute(query, values)
     conn.commit()
 
 
 def insert_sales(productid, quantity):
-    query = "insert into sales(productid, quantity, createdat) values(%s, %s, now())"
-    values= (productid, quantity)
+    query = "insert into sales(pid, quantity, created_at) values(%s, %s, now())"
+    values = (productid, quantity)
     cur.execute(query, values)
     conn.commit()
-    
-def get_stock_quantity(name):
-    query ="SELECT SUM(quantity) FROM stock JOIN products ON stock.productid=products.productid WHERE products.name=%s GROUP BY products.name"
-    values= (name,)
+
+
+def get_stock_quantity(id):
+    query = "SELECT stock_quantity FROM products WHERE products.id=%s"
+    values = (id,)
     cur.execute(query, values)
-    stockquantity=cur.fetchone()
-    return stockquantity[0] if stockquantity and stockquantity[0] is not None else 0
-
-
-def insert_stock(salesid, productid, quantity):
-    query = "insert into stock(salesid, productid, quantity, createdat) values(%s, %s, %s, now())"
-    values=(salesid, productid, quantity)
-    cur.execute(query, values)
-    conn.commit()
-    
-def add_stock(salesid, productid, quantity):
-    query="INSERT INTO stock(salesid, productid, quantity, createdat) VALUES(%s, %s, %s, NOW())"
-    values=(salesid, productid, quantity)
-    cur.execute(query, values)
-    conn.commit()
-    
-# def add_stock(salesid, productid, quantity):
-#     query="SELECT stock.stockid, stock.salesid, stock.productid, products.name, stock.quantity, stock.createdat FROM stock JOIN products ON stock.productid = products.productid;"
-#     values=(salesid, productid, quantity)
-#     cur.execute(query, values)
-#     conn.commit()
-
-
-def get_remaining_stock_per_product():
-    query = "SELECT stock.productid, SUM(stock.quantity)- COALESCE(SUM(sales.quantity),0) AS Remaining_Stock FROM stock LEFT JOIN sales ON stock.productid=sales.productid GROUP BY stock.productid;"
-    cur.execute(query)
-    res = cur.fetchall()
-    return res
+    stockquantity = cur.fetchone()
+    return stockquantity[0]
 
 
 def get_profit_per_product():
-    query = "select name, sum(sellingprice - buyingprice) as profit_per_product from products join sales on products.productid=sales.productid group by products.name;"
+    query = "select name, sum(selling_price - buying_price) as profit_per_product from products join sales on products.id=sales.pid group by products.name;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_sales_per_product():
-    query = "select name, sum(sellingprice * quantity) as sales_per_product from products join sales on products.productid=sales.productid group by name;"
+    query = "select name, sum(selling_price * quantity) as sales_per_product from products join sales on products.id=sales.pid group by name;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_sales_per_day():
-    query = "select date(createdat) as Day, sum((sellingprice )*quantity) as sales_per_day from products join sales on products.productid=sales.productid group by date(createdat) order by day;"
+    query = "select date(created_at) as Day, sum((selling_price )*quantity) as sales_per_day from products join sales on products.id=sales.pid group by date(created_at) order by day;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_profit_per_day():
-    query = "select date(createdat) as Day, sum((sellingprice-buyingprice )*quantity) as profit_per_day from products join sales on products.productid=sales.productid group by date(createdat) order by day;"
+    query = "select date(created_at) as Day, sum((selling_price-buying_price )*quantity) as profit_per_day from products join sales on products.id=sales.pid group by date(created_at) order by day;"
     cur.execute(query)
     res = cur.fetchall()
     return res
@@ -94,7 +69,7 @@ def get_profit_per_day():
 
 def register_user(first_name, last_name, email, password):
     query = "insert into users(first_name, last_name, email, password) values(%s, %s, %s, %s)"
-    values=(first_name, last_name, email, password)
+    values = (first_name, last_name, email, password)
     cur.execute(query, values)
     conn.commit()
 
@@ -107,23 +82,28 @@ def check_email(email):
         return data
 
 
-def check_email_pass(email1, password1):
+def check_email_pass(email, password):
     query = "select * from users where email=%s and password=%s"
-    cur.execute(query, (email1, password1,))
-    res = cur.fetchall()
-    return res
-
-# prefills
-
-
-def edit_product_data():
-    query = "SELECT name, buyingprice, sellingprice FROM products"
-    cur.execute(query)
+    cur.execute(query, (email, password,))
     res = cur.fetchall()
     return res
 
 
-def update_product_data(productid, name, buyingprice, sellingprice):
-    query = "UPDATE products SET name=%s, buyingprice=%s, sellingprice=%s WHERE productid=%s"
-    cur.execute(query, (name, buyingprice, sellingprice, productid))
+def get_product_by_name(name):
+    query = "SELECT * FROM products WHERE name=%s"
+    cur.execute(query, (name,))
+    data = cur.fetchone()
+    return data
+
+
+def update_product_data(name, buyingprice, sellingprice, stockquantity, id,):
+    query = "UPDATE products SET name=%s, buying_price=%s, selling_price=%s, stock_quantity=%s WHERE id=%s"
+    cur.execute(query, (name, buyingprice, sellingprice, stockquantity, id))
+    conn.commit()
+
+
+def update_stock_quantity(stock_quantity, id):
+    query = " UPDATE products SET stock_quantity=%s WHERE id=%s"
+    values = (stock_quantity, id)
+    cur.execute(query, values)
     conn.commit()

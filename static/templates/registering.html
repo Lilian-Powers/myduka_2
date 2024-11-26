@@ -29,13 +29,7 @@
         Fill in your details in the following form;
       </p>
     </div>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul class="flashes">
-      {% for message in messages %}
-      <li style="color: red; text-align: center; list-style-type: none">{{ message }}</li>
-      {% endfor %}
     </ul>
-    {% endif %} {% endwith %}
     <div class="container">
       <form id="Registering" action="/registering" method="post">
         <div class="form-group">
