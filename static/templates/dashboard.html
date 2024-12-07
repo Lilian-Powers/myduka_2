@@ -33,7 +33,7 @@
     // Bar chart
 
     // sales per product
-  new Chart(document.getElementById("bar-chart-sales"), {
+  new Chart(document.getElementById("bar-chart-sales",), {
       type: 'bar',
       data: {
         labels: {{ names | safe }},
@@ -46,7 +46,7 @@
           {
             label: "Profit per Product",
             backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd","#c45850"],
-            data: {{ profit | safe }}
+            data: {{ profits | safe }}
           }
         ]
       },
@@ -60,26 +60,26 @@
   });
 
   // profit per product
-  new Chart(document.getElementById("bar-chart-profit"), {
-      type: 'bar',
-      data: {
-        labels: {{ names | safe }},
-        datasets: [
-          {
-            label: "profit per Product",
-            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd","#c45850"],
-            data: {{ profit | safe }}
-          },
-        ]
-      },
-      options: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: 'profit per Product today'
-        }
-      }
-  });
+  // new Chart(document.getElementById("bar-chart-profit"), {
+  //     type: 'bar',
+  //     data: {
+  //       labels: {{ names | safe }},
+  //       datasets: [
+  //         {
+  //           label: "profit per Product",
+  //           backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3e95cd","#c45850"],
+  //           data: {{ profits | safe }}
+  //         },
+  //       ]
+  //     },
+  //     options: {
+  //       legend: { display: false },
+  //       title: {
+  //         display: true,
+  //         text: 'profit per Product today'
+  //       }
+  //     }
+  // });
 
   // line chart
 
@@ -88,9 +88,9 @@
   new Chart(document.getElementById("line-chart-sales"), {
     type: 'line',
     data: {
-      labels: {{ date | safe }},
+      labels: {{ dates | safe }},
       datasets: [{
-          data: {{ sales | safe }},
+          data: {{ daily_sales | safe }},
           label: "Sales per day",
           borderColor: "#3e95cd",
           fill: false
@@ -110,9 +110,9 @@
   new Chart(document.getElementById("line-chart-profit"), {
     type: 'line',
     data: {
-      labels: {{ date | safe }},
+      labels: {{ dates | safe }},
       datasets: [{
-          data: {{ d_profit | safe }},
+          data: {{ daily_profits | safe }},
           label: "Profit per day",
           borderColor: "green",
           fill: false

@@ -108,26 +108,24 @@ head %} {{ super() }}
       <th>Buying Price</th>
       <th>Selling Price</th>
       <th> Stock quantity</th>
-      <!-- <th>Remaining Stock</th> -->
       <th>Edit</th>
-      <!-- <th>Bar Code</th> -->
     </tr>
   </thead>
   <tbody>
-    {% for product in prods %} 
+    {% for product in products %} 
     <tr>
-      <td>{{product[0]}}</td>
-      <td>{{product[1]}}</td>
-      <td>{{product[2]}}</td>
-      <td>{{product[3]}}</td>
-      <td>{{product[4]}}</td>
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.buying_price }}</td>
+      <td>{{ product.selling_price }}</td>
+      <td>{{ product.stock_quantity }}</td>
       <td>
         <!-- Button trigger modal -->
         <button
           type="button"
           class="btn btn-primary"
           data-toggle="modal"
-          data-target="#edit{{product[0]}}"
+          data-target="#edit{{ product[0] }}"
         >
           Edit product
         </button>
@@ -167,7 +165,7 @@ head %} {{ super() }}
                       type="hidden"
                       class="form-control"
                       placeholder="Enter product name"
-                      value="{{product[0]}}"
+                      value="{{ product[0] }}"
                       for="pn"
                       name="pi"
                       required
@@ -179,7 +177,7 @@ head %} {{ super() }}
                       type="text"
                       class="form-control"
                       placeholder="Enter product name"
-                      value="{{product[1]}}"
+                      value="{{ product[1] }}"
                       for="pn"
                       name="pn"
                       required
@@ -190,7 +188,7 @@ head %} {{ super() }}
                     <input
                       type="number"
                       class="form-control"
-                      value="{{product[2]}}"
+                      value="{{ product[2] }}"
                       for="bp"
                       name="bp"
                       required
@@ -201,7 +199,7 @@ head %} {{ super() }}
                     <input
                       type="number"
                       class="form-control"
-                      value="{{product[3]}}"
+                      value="{{ product[3] }}"
                       for="sp"
                       name="sp"
                       required
@@ -212,7 +210,7 @@ head %} {{ super() }}
                     <input
                       type="number"
                       class="form-control"
-                      value="{{product[4]}}"
+                      value="{{ product[4] }}"
                       for="sq"
                       name="sq"
                       required

@@ -51,11 +51,11 @@
               </button>
             </div>
             <div class="modal-body">
-              <form id="sales_form" action="/make_sales" class="" method="POST">
-                <select name="productid" id="">
-                  <option value="">select product</option>
-                  {% for i in products %}
-                  <option value="{{i[0]}}">{{i[1]}}</option>
+              <form id = "sales_form" action="/make_sales" class="" method="POST">
+                <select name=  "product_id" id= "product_id">
+                  <option value="">Select product</option>
+                  {% for product in products %}
+                  <option value="{{ product.id }}">{{ product.name }}</option>
                   {% endfor %}</select
                 ><br /><br />
                 <input
@@ -119,12 +119,12 @@
         </tr>
       </thead>
       <tbody>
-        {% for sale in sale %}
+        {% for sale in sales %}
         <tr>
-          <td>{{sale[0]}}</td>
-          <td>{{product_name.get(sale[1], 'unknown')}}</td>
-          <td>{{sale[2]}}</td>
-          <td>{{sale[3]}}</td>
+          <td>{{ sale.id }}</td>
+          <td>{{ product_name.get(sale.product_id, 'unknown') }}</td>
+          <td>{{ sale.quantity }}</td>
+          <td>{{ sale.created_at }}</td>
         </tr>
         {% endfor %}
       </tbody>

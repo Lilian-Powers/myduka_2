@@ -11,21 +11,21 @@ cur = conn.cursor()
 
 
 def get_data(table):
-    query = f"select * from {table}"
+    query = f"SELECT * FROM {table}"
     cur.execute(query)
     data = cur.fetchall()
     return data
 
 
 def insert_products(name, buying_price, selling_price, stock_quantity):
-    query = "insert into products(name, buying_price, selling_price, stock_quantity) values(%s, %s, %s, %s)"
+    query = "INSERT INTO PRODUCTS(name, buying_price, selling_price, stock_quantity) VALUES(%s, %s, %s, %s)"
     values = (name, buying_price, selling_price, stock_quantity)
     cur.execute(query, values)
     conn.commit()
 
 
 def insert_sales(productid, quantity):
-    query = "insert into sales(pid, quantity, created_at) values(%s, %s, now())"
+    query = "INSERT INTO SALES (pid, quantity, created_at) VALUES(%s, %s, now())"
     values = (productid, quantity)
     cur.execute(query, values)
     conn.commit()
@@ -40,42 +40,42 @@ def get_stock_quantity(id):
 
 
 def get_profit_per_product():
-    query = "select name, sum(selling_price - buying_price) as profit_per_product from products join sales on products.id=sales.pid group by products.name;"
+    query = "SELECT name, sum(selling_price - buying_price) AS profit_per_product FROM products JOIN sales ON products.id=sales.pid GROUP BY products.name;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_sales_per_product():
-    query = "select name, sum(selling_price * quantity) as sales_per_product from products join sales on products.id=sales.pid group by name;"
+    query = "SELECT name, sum(selling_price * quantity) AS sales_per_product FROM products JOIN sales ON products.id=sales.pid GROUP BY name;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_sales_per_day():
-    query = "select date(created_at) as Day, sum((selling_price )*quantity) as sales_per_day from products join sales on products.id=sales.pid group by date(created_at) order by day;"
+    query = "SELECT date(created_at) AS Day, sum((selling_price )*quantity) AS sales_per_day FROM products JOIN sales ON products.id=sales.pid GROUP BY date(created_at) ORDER BY day;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def get_profit_per_day():
-    query = "select date(created_at) as Day, sum((selling_price-buying_price )*quantity) as profit_per_day from products join sales on products.id=sales.pid group by date(created_at) order by day;"
+    query = "SELECT date(created_at) AS Day, sum((selling_price-buying_price )*quantity) AS profit_per_day FROM products JOIN sales ON products.id=sales.pid GROUP BY date(created_at) ORDER BY day;"
     cur.execute(query)
     res = cur.fetchall()
     return res
 
 
 def register_user(first_name, last_name, email, password):
-    query = "insert into users(first_name, last_name, email, password) values(%s, %s, %s, %s)"
+    query = "INSERT INTO users(first_name, last_name, email, password) VALUES(%s, %s, %s, %s)"
     values = (first_name, last_name, email, password)
     cur.execute(query, values)
     conn.commit()
 
 
 def check_email(email):
-    query = "select * from users where email=%s"
+    query = "SELECT * FROM users WHERE email=%s"
     cur.execute(query, (email,))
     data = cur.fetchone()
     if data:
@@ -83,7 +83,7 @@ def check_email(email):
 
 
 def check_email_pass(email, password):
-    query = "select * from users where email=%s and password=%s"
+    query = "SELECT * FROM users WHERE email=%s AND password=%s"
     cur.execute(query, (email, password,))
     res = cur.fetchall()
     return res
